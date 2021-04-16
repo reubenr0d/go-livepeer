@@ -10,6 +10,8 @@
 
 #### Orchestrator
 
+- \#1845 Staking actions with hints (@kyriediculous)
+
 #### Transcoder
 
 ### Bug Fixes 🐞
