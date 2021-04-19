@@ -443,10 +443,17 @@ func (c *client) Bond(amount *big.Int, to ethcommon.Address) (*types.Transaction
 		oldHints = findTranscoderHints(delegator.DelegateAddress, transcoders)
 	}
 
-	totalBonded, err := c.GetTotalBonded()
+	currentRound, err := c.CurrentRound()
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to get total bonded")
+		return nil, err
 	}
+
+	ep, err := c.GetTranscoderEarningsPoolForRound(to, currentRound)
+	if err != nil {
+		return nil, err
+	}
+
+	totalBonded := ep.TotalStake
 
 	newStake := totalBonded.Add(totalBonded, amount)
 
@@ -485,10 +492,17 @@ func (c *client) Unbond(amount *big.Int) (*types.Transaction, error) {
 		return nil, errors.Wrapf(err, "unable to get transcoder pool max size")
 	}
 
-	totalBonded, err := c.GetTotalBonded()
+	currentRound, err := c.CurrentRound()
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to get total bonded")
+		return nil, err
 	}
+
+	ep, err := c.GetTranscoderEarningsPoolForRound(sender, currentRound)
+	if err != nil {
+		return nil, err
+	}
+
+	totalBonded := ep.TotalStake
 
 	newStake := totalBonded.Sub(totalBonded, amount)
 
@@ -514,10 +528,17 @@ func (c *client) RebondFromUnbonded(to ethcommon.Address, unbondingLockID *big.I
 		return nil, errors.Wrapf(err, "unable to get transcoder pool max size")
 	}
 
-	totalBonded, err := c.GetTotalBonded()
+	currentRound, err := c.CurrentRound()
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to get total bonded")
+		return nil, err
 	}
+
+	ep, err := c.GetTranscoderEarningsPoolForRound(to, currentRound)
+	if err != nil {
+		return nil, err
+	}
+
+	totalBonded := ep.TotalStake
 
 	lock, err := c.GetDelegatorUnbondingLock(sender, unbondingLockID)
 	if err != nil {
@@ -554,10 +575,17 @@ func (c *client) Rebond(unbondingLockID *big.Int) (*types.Transaction, error) {
 		return nil, errors.Wrapf(err, "unable to get transcoder pool max size")
 	}
 
-	totalBonded, err := c.GetTotalBonded()
+	currentRound, err := c.CurrentRound()
 	if err != nil {
-		return nil, errors.Wrapf(err, "unable to get total bonded")
+		return nil, err
 	}
+
+	ep, err := c.GetTranscoderEarningsPoolForRound(sender, currentRound)
+	if err != nil {
+		return nil, err
+	}
+
+	totalBonded := ep.TotalStake
 
 	lock, err := c.GetDelegatorUnbondingLock(sender, unbondingLockID)
 	if err != nil {
