@@ -515,7 +515,7 @@ func (c *client) RebondFromUnbonded(to ethcommon.Address, unbondingLockID *big.I
 
 	lock, err := c.GetDelegatorUnbondingLock(sender, unbondingLockID)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Unable to get unbonding lock")
+		return nil, errors.Wrapf(err, "unable to get unbonding lock")
 	}
 
 	isFull := int64(len(transcoders)) == maxSize.Int64()
@@ -552,7 +552,7 @@ func (c *client) Rebond(unbondingLockID *big.Int) (*types.Transaction, error) {
 
 	lock, err := c.GetDelegatorUnbondingLock(sender, unbondingLockID)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Unable to get unbonding lock")
+		return nil, errors.Wrapf(err, "unable to get unbonding lock")
 	}
 
 	isFull := int64(len(transcoders)) == maxSize.Int64()
