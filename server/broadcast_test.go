@@ -237,22 +237,16 @@ func TestNewSessionManager(t *testing.T) {
 	sess := NewSessionManager(n, params, &LIFOSelector{})
 	assert.Equal(0, sess.numOrchs)
 
-	// Check numOrchs up to maximum and a bit beyond
+	// Check numOrchs equals poolSize
 	sd := &stubDiscovery{}
 	n.OrchestratorPool = sd
-	max := int(common.HTTPTimeout.Seconds()/SegLen.Seconds()) * 2
 	for i := 0; i < 10; i++ {
-		sess = NewSessionManager(n, params, &LIFOSelector{})
-		if i < max {
-			assert.Equal(i, sess.numOrchs)
-		} else {
-			assert.Equal(max, sess.numOrchs)
-		}
 		sd.infos = append(sd.infos, &net.OrchestratorInfo{PriceInfo: &net.PriceInfo{}})
+		sess = NewSessionManager(n, params, &LIFOSelector{})
+		assert.Equal(i+1, sess.numOrchs)
 	}
 	// sanity check some expected postconditions
-	assert.Equal(sess.numOrchs, max)
-	assert.True(sd.Size() > max, "pool should be greater than max numOrchs")
+	assert.Equal(sess.numOrchs, sd.Size())
 }
 
 func wgWait(wg *sync.WaitGroup) bool {

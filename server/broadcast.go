@@ -274,8 +274,8 @@ func NewSessionManager(node *core.LivepeerNode, params *core.StreamParameters, s
 	if node.OrchestratorPool != nil {
 		poolSize = float64(node.OrchestratorPool.Size())
 	}
-	maxInflight := common.HTTPTimeout.Seconds() / SegLen.Seconds()
-	numOrchs := int(math.Min(poolSize, maxInflight*2))
+
+	numOrchs := int(poolSize)
 	sus := newSuspender()
 	bsm := &BroadcastSessionsManager{
 		mid:     params.ManifestID,
