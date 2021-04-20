@@ -443,17 +443,7 @@ func (c *client) Bond(amount *big.Int, to ethcommon.Address) (*types.Transaction
 		oldHints = findTranscoderHints(delegator.DelegateAddress, transcoders)
 	}
 
-	currentRound, err := c.CurrentRound()
-	if err != nil {
-		return nil, err
-	}
-
-	ep, err := c.GetTranscoderEarningsPoolForRound(to, currentRound)
-	if err != nil {
-		return nil, err
-	}
-
-	totalBonded := ep.TotalStake
+	totalBonded := delegator.DelegatedAmount
 
 	newStake := totalBonded.Add(totalBonded, amount)
 
@@ -492,17 +482,7 @@ func (c *client) Unbond(amount *big.Int) (*types.Transaction, error) {
 		return nil, errors.Wrapf(err, "unable to get transcoder pool max size")
 	}
 
-	currentRound, err := c.CurrentRound()
-	if err != nil {
-		return nil, err
-	}
-
-	ep, err := c.GetTranscoderEarningsPoolForRound(sender, currentRound)
-	if err != nil {
-		return nil, err
-	}
-
-	totalBonded := ep.TotalStake
+	totalBonded := delegator.DelegatedAmount
 
 	newStake := totalBonded.Sub(totalBonded, amount)
 
@@ -528,17 +508,10 @@ func (c *client) RebondFromUnbonded(to ethcommon.Address, unbondingLockID *big.I
 		return nil, errors.Wrapf(err, "unable to get transcoder pool max size")
 	}
 
-	currentRound, err := c.CurrentRound()
+	totalBonded, err := c.TranscoderTotalStake(to)
 	if err != nil {
 		return nil, err
 	}
-
-	ep, err := c.GetTranscoderEarningsPoolForRound(to, currentRound)
-	if err != nil {
-		return nil, err
-	}
-
-	totalBonded := ep.TotalStake
 
 	lock, err := c.GetDelegatorUnbondingLock(sender, unbondingLockID)
 	if err != nil {
@@ -575,17 +548,7 @@ func (c *client) Rebond(unbondingLockID *big.Int) (*types.Transaction, error) {
 		return nil, errors.Wrapf(err, "unable to get transcoder pool max size")
 	}
 
-	currentRound, err := c.CurrentRound()
-	if err != nil {
-		return nil, err
-	}
-
-	ep, err := c.GetTranscoderEarningsPoolForRound(sender, currentRound)
-	if err != nil {
-		return nil, err
-	}
-
-	totalBonded := ep.TotalStake
+	totalBonded := delegator.DelegatedAmount
 
 	lock, err := c.GetDelegatorUnbondingLock(sender, unbondingLockID)
 	if err != nil {
