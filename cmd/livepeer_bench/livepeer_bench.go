@@ -67,7 +67,7 @@ func main() {
 		accel = ffmpeg.Nvidia
 		devices, err = common.ParseNvidiaDevices(*nvidia)
 		if err != nil {
-			glog.Fatalf("Couldn't parse Nvidia GPUs: %v", err)
+			glog.Fatalf("Error while parsing '-nvidia %v' flag: %v", *nvidia, err)
 		}
 	}
 

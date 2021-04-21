@@ -272,7 +272,7 @@ func main() {
 			// Get a list of device ids
 			devices, err := common.ParseNvidiaDevices(*nvidia)
 			if err != nil {
-				glog.Fatalf("Couldn't parse Nvidia GPUs: %v", err)
+				glog.Fatalf("Error while parsing '-nvidia %v' flag: %v", *nvidia, err)
 			}
 			glog.Infof("Transcoding on these Nvidia GPUs: %v", devices)
 			// Test transcoding with nvidia
